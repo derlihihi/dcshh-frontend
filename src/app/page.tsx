@@ -118,9 +118,10 @@ export default function MainPage() {
         console.log("後端回傳結果：", result);
 
         // 假設後端回傳 { qrCode: "data:image/png;base64,..." }
-        if (result.qrCode) {
-          setQrCodeUrl(result.qrCode);   // 觸發彈窗
-        } else {
+if (result.converterResponse && result.converterResponse.qrCode) {
+          setQrCodeUrl(result.converterResponse.qrCode); // <-- 讀取正確的路徑
+        // --- 結束 ---
+        }else {
           alert("成功送出，但未收到 QR Code");
         }
         //alert("資料已成功送出並轉換！");
