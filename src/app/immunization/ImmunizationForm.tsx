@@ -1,206 +1,245 @@
 "use client";
 
-import { useState } from "react";
-import { vaccines } from "../../data/vaccines"; // 你整理好的疫苗清單
+import { useState, useEffect } from "react";
+import { vaccines } from "../../data/vaccines";
+
+interface ImmunizationItem {
+  接種狀態: string;
+  疫苗代碼: string;
+  接種日期: string;
+  接種日期文字: string;
+  劑次: string;
+}
 
 export default function ImmunizationForm({
   patientId,
   onSubmitData,
 }: {
   patientId: string;
-  onSubmitData: (data: any[]) => void;
+  onSubmitData: (data: any) => void;
 }) {
-  const [entries, setEntries] = useState([
-    {
-      status: "completed",
-      vaccineCode: "",
-      occurrenceDateTime: "",
-      occurrenceString: "",
-      doseNumber: "1", // 預設 1
-    },
-  ]);
+  const [immunizationList, setImmunizationList] = useState<ImmunizationItem[]>([]);
+  const [hydrated, setHydrated] = useState(false);
 
-  // 更新單筆資料
+  // 載入 localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem(`immunizationList-${patientId}`);
+    if (saved) {
+      setImmunizationList(JSON.parse(saved));
+    } else {
+      setImmunizationList([
+        {
+          接種狀態: "completed",
+          疫苗代碼: "",
+          接種日期: "",
+          接種日期文字: "",
+          劑次: "1",
+        },
+      ]);
+    }
+    setHydrated(true);
+  }, [patientId]);
+
+  // 儲存到 localStorage
+  useEffect(() => {
+    if (hydrated) {
+      localStorage.setItem(`immunizationList-${patientId}`, JSON.stringify(immunizationList));
+    }
+  }, [immunizationList, hydrated, patientId]);
+
   const handleChange = (
     index: number,
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setEntries((prev) => {
-      const updated = [...prev];
-      updated[index][name as keyof typeof updated[0]] = value;
-      return updated;
-    });
+    const newList = [...immunizationList];
+
+    if (name === "疫苗代碼") {
+      const selected = vaccines.find((v) => v.code === value);
+      newList[index].疫苗代碼 = value;
+      // 這裡不需要 display/text，因為後端會用 code 去查
+    } else {
+      (newList[index] as any)[name] = value;
+    }
+
+    setImmunizationList(newList);
   };
 
-  // 新增一筆
-  const handleAdd = () => {
-    setEntries((prev) => [
-      ...prev,
+  const addImmunization = () => {
+    setImmunizationList([
+      ...immunizationList,
       {
-        status: "completed",
-        vaccineCode: "",
-        occurrenceDateTime: "",
-        occurrenceString: "",
-        doseNumber: "1",
+        接種狀態: "completed",
+        疫苗代碼: "",
+        接種日期: "",
+        接種日期文字: "",
+        劑次: "1",
       },
     ]);
   };
 
-  // 刪除一筆
-  const handleRemove = (index: number) => {
-    setEntries((prev) => prev.filter((_, i) => i !== index));
+  const removeImmunization = (index: number) => {
+    setImmunizationList(immunizationList.filter((_, i) => i !== index));
   };
 
-  // 送出所有資料
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const immunizationResources = entries.map((item) => {
-      const selected = vaccines.find((v) => v.code === item.vaccineCode);
+    const payload = immunizationList.map((item) => {
+      const selected = vaccines.find((v) => v.code === item.疫苗代碼);
 
       return {
-        resourceType: "Immunization",
-        status: item.status,
-        vaccineCode: {
-          coding: selected
-            ? [
-                {
-                  system: selected.system || "http://snomed.info/sct",
-                  code: selected.code,
-                  display: selected.display,
-                },
-              ]
-            : [],
-          text: selected ? selected.display : "",
+        接種狀態: item.接種狀態,
+        疫苗代碼: selected
+          ? {
+              系統: selected.system || "http://snomed.info/sct",
+              代碼: selected.code,
+              英文名稱: selected.display || selected.text,
+              中文名稱: selected.text,
+            }
+          : { 系統: "", 代碼: "", 英文名稱: "", 中文名稱: "" },
+        關聯病患: {
+          reference: `Patient/${patientId}`,
         },
-        patient: {
-          reference: `Patient/${patientId}`, // 後端綁定病患
-        },
-        occurrenceDateTime: item.occurrenceDateTime || undefined,
-        occurrenceString: item.occurrenceString || undefined,
-        protocolApplied: [
-          {
-            doseNumberPositiveInt: parseInt(item.doseNumber),
-          },
-        ],
+        接種日期: item.接種日期 || undefined,
+        接種日期文字: item.接種日期文字 || undefined,
+        劑次: parseInt(item.劑次) || 1,
       };
     });
 
-    console.log("Immunization 表單資料：", immunizationResources);
-    onSubmitData(immunizationResources);
+    console.log("疫苗資料送出（中文欄位）:", payload);
+    onSubmitData(payload);
+    alert("疫苗資料已送出");
   };
 
+  if (!hydrated) {
+    return <p className="text-gray-500 text-center">載入中...</p>;
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {entries.map((entry, index) => {
-        const selected = vaccines.find((v) => v.code === entry.vaccineCode);
-        return (
-          <fieldset key={index} className="p-4 border rounded-md">
-            {/* 顯示疫苗名稱 */}
-            <legend className="font-semibold">
-              {selected
-                ? `${selected.display} ${selected.text || ""}`
-                : `疫苗紀錄 ${index + 1}`}
-            </legend>
+    <div className="max-w-3xl mx-auto my-6 p-6 border rounded-lg shadow bg-white">
+      <h2 className="text-xl font-bold text-center mb-6">預防接種表單</h2>
 
-            {/* 疫苗代碼 */}
-            <div>
-              <label>疫苗代碼 *</label>
-              <select
-                name="vaccineCode"
-                value={entry.vaccineCode}
-                onChange={(e) => handleChange(index, e)}
-                required
-                style={{ whiteSpace: "normal" }} // 支援長文字換行
-                className="w-full"
-              >
-                <option value="">請選擇疫苗</option>
-                {vaccines.map((v) => (
-                  <option key={v.code} value={v.code}>
-                    {v.text ? ` ${v.text}` : ""} ({v.code})
-                  </option>
-                ))}
-              </select>
-            </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {immunizationList.map((item, index) => {
+          const selected = vaccines.find((v) => v.code === item.疫苗代碼);
+          const displayName = selected
+            ? `${selected.text || selected.display} (${selected.code})`
+            : `疫苗紀錄 ${index + 1}`;
 
-            {/* 接種狀態 */}
-            <div>
-              <label>接種狀態 *</label>
-              <select
-                name="status"
-                value={entry.status}
-                onChange={(e) => handleChange(index, e)}
-                required
-              >
-                <option value="completed">完成</option>
-                <option value="not-done">未完成</option>
-                <option value="entered-in-error">錯誤</option>
-              </select>
-            </div>
+          return (
+            <fieldset key={index} className="border p-4 rounded space-y-4">
+              <legend className="font-semibold">{displayName}</legend>
 
-            {/* 接種日期 DateTime */}
-            <div>
-              <label>接種日期 (DateTime)</label>
-              <input
-                type="datetime-local"
-                name="occurrenceDateTime"
-                value={entry.occurrenceDateTime}
-                onChange={(e) => handleChange(index, e)}
-              />
-            </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* 疫苗代碼 */}
+                <label className="md:col-span-2">
+                  疫苗代碼 *
+                  <select
+                    name="疫苗代碼"
+                    value={item.疫苗代碼}
+                    onChange={(e) => handleChange(index, e)}
+                    required
+                    className="w-full p-2 border rounded"
+                  >
+                    <option value="">請選擇疫苗</option>
+                    {vaccines.map((v) => (
+                      <option key={v.code} value={v.code}>
+                        {v.text} ({v.code})
+                      </option>
+                    ))}
+                  </select>
+                </label>
 
-            {/* 接種日期 String */}
-            <div>
-              <label>接種日期 (不精確文字)</label>
-              <input
-                type="text"
-                name="occurrenceString"
-                value={entry.occurrenceString}
-                onChange={(e) => handleChange(index, e)}
-                placeholder="例如：2023年夏天"
-              />
-            </div>
+                {/* 接種狀態 */}
+                <label>
+                  接種狀態 *
+                  <select
+                    name="接種狀態"
+                    value={item.接種狀態}
+                    onChange={(e) => handleChange(index, e)}
+                    required
+                    className="w-full p-2 border rounded"
+                  >
+                    <option value="completed">完成</option>
+                    <option value="not-done">未完成</option>
+                    <option value="entered-in-error">錯誤</option>
+                  </select>
+                </label>
 
-            {/* 劑次編號 */}
-            <div>
-              <label>劑次編號 *</label>
-              <input
-                type="number"
-                name="doseNumber"
-                value={entry.doseNumber}
-                onChange={(e) => handleChange(index, e)}
-                required
-                min={1}
-              />
-            </div>
+                {/* 劑次 */}
+                <label>
+                  劑次 *
+                  <input
+                    type="number"
+                    name="劑次"
+                    value={item.劑次}
+                    onChange={(e) => handleChange(index, e)}
+                    required
+                    min={1}
+                    className="w-full p-2 border rounded"
+                  />
+                </label>
 
-            {/* 刪除按鈕 */}
-            {entries.length > 1 && (
-              <button
-                type="button"
-                className="bg-red-500 text-white px-2 py-1 rounded mt-2"
-                onClick={() => handleRemove(index)}
-              >
-                刪除此筆
-              </button>
-            )}
-          </fieldset>
-        );
-      })}
+                {/* 精確日期 */}
+                <label>
+                  接種日期（精確）
+                  <input
+                    type="datetime-local"
+                    name="接種日期"
+                    value={item.接種日期}
+                    onChange={(e) => handleChange(index, e)}
+                    className="w-full p-2 border rounded"
+                  />
+                </label>
 
-      <div className="flex gap-4 mt-4">
-        <button
-          type="button"
-          className="bg-green-500 text-white px-4 py-2 rounded"
-          onClick={handleAdd}
-        >
-          新增疫苗紀錄
-        </button>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-          儲存疫苗紀錄
-        </button>
-      </div>
-    </form>
+                {/* 文字日期 */}
+                <label>
+                  接種日期（文字）
+                  <input
+                    type="text"
+                    name="接種日期文字"
+                    value={item.接種日期文字}
+                    onChange={(e) => handleChange(index, e)}
+                    placeholder="例如：2023年夏天"
+                    className="w-full p-2 border rounded"
+                  />
+                </label>
+              </div>
+
+              {/* 刪除按鈕 */}
+              {immunizationList.length > 1 && (
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    className="bg-red-500 px-3 py-1 text-white rounded"
+                    onClick={() => removeImmunization(index)}
+                  >
+                    刪除這筆
+                  </button>
+                </div>
+              )}
+            </fieldset>
+          );
+        })}
+
+        {/* 操作按鈕 */}
+        <div className="flex gap-3 mt-4 justify-end">
+          <button
+            type="button"
+            className="bg-green-500 px-4 py-2 text-white rounded"
+            onClick={addImmunization}
+          >
+            新增疫苗
+          </button>
+          <button
+            type="submit"
+            className="bg-blue-600 px-4 py-2 text-white rounded"
+          >
+            送出疫苗資料
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
