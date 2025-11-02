@@ -1,124 +1,124 @@
-/* globals.css */
-/*body 與 .container用於MainPage.tsx/page.tsx：
-控制整個頁面的背景、容器寬度、圓角、陰影等。*/
+/* === globals.css === */
+/*全站背景與字體 */
 body {
-  font-family: Arial, sans-serif;
-  padding: 20px;
-  background-color: #f5f5f5;
+  font-family: "Segoe UI", "Noto Sans TC", Arial, sans-serif;
+  padding: 40px;
+  background: linear-gradient(180deg, #f0f6ff 0%, #e8f0ff 100%);
+  color: #333;
 }
 
+/* 主容器（所有表單與主要內容） */
 .container {
   max-width: 900px;
   margin: auto;
-  background: white;
-  padding: 24px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Title */
-/*h1, h2用於 MainPage.tsx 的標題，
-也可通用到其他表單元件標題。*/
+.container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+}
+
+/* 標題（主頁與表單標題共用） */
 h1, h2 {
   text-align: center;
-  margin-bottom: 20px;
-  font-weight: bold;
+  margin-bottom: 28px;
+  font-weight: 800;
+  color: #1e3a8a;
+  letter-spacing: 1px;
 }
 
-/* --- 表單共用樣式 --- */
-/*form, label, input, select用於所有表單元件：
-PatientForm.tsx AllergyForm.tsx ConditionForm.tsx
-控制表單布局、欄位間距、欄位樣式、聚焦效果等。*/
+/* === 表單區塊 === */
 form {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  gap: 18px;
 }
 
 label {
   display: flex;
   flex-direction: column;
-  font-size: 14px;
+  font-size: 15px;
+  color: #444;
+  font-weight: 600;
 }
 
 input,
 select {
-  padding: 8px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  background: #fafafa;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #f9fafb;
+  transition: 0.2s;
 }
 
 input:focus,
 select:focus {
   outline: none;
-  border-color: #0070f3;
-  box-shadow: 0 0 4px rgba(0,112,243,0.4);
+  border-color: #2563eb;
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.4);
 }
 
-/* fieldset 樣式（給 AllergyForm 使用） */
-/*fieldset, legend專門針對 AllergyForm.tsx的
-fieldset 使用（你之前說過 AllergyForm 有分組欄位）。*/
+/* === 分組區塊 === */
 fieldset {
   grid-column: span 2;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 15px;
-  margin-bottom: 10px;
-  background: #fcfcfc;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 18px;
+  background: #fdfdfd;
 }
 
 legend {
   font-weight: bold;
-  color: #0070f3;
-  padding: 0 5px;
+  color: #2563eb;
+  padding: 0 6px;
 }
 
-/* --- 按鈕 --- */
-/*button, .bg-blue-500, .bg-green-500, .bg-red-500
-用於所有按鈕：
-送出表單（藍色）完成輸出 / 新增（綠色）刪除（紅色）*/
+/* === 按鈕統一設計 === */
 button {
-  padding: 10px;
-  font-size: 15px;
+  font-size: 16px;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.3s ease;
+  font-weight: 700;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
   opacity: 0.9;
+  transform: translateY(-2px);
 }
 
-/* 藍色（送出 / Tab 按鈕） */
+/* 按鈕配色 */
 button.bg-blue-500 {
-  background: #0070f3;
-  color: white;
+  background: #2563eb;
+  color: #fff;
 }
 
-/* 綠色（完成輸出 / 新增） */
 button.bg-green-500 {
   background: #10b981;
-  color: white;
+  color: #fff;
 }
 
-/* 紅色（刪除） */
 button.bg-red-500 {
   background: #ef4444;
-  color: white;
+  color: #fff;
 }
-/* 讓指定欄位可以跨兩欄，並填滿整行 */
+
+/* 讓特定欄位跨兩欄 */
 .full-row {
   grid-column: span 2;
   width: 100%;
 }
 
-/* 以下是Tab 按鈕 */
-/*.tab-buttons,.tab-button,.tab-button.active,.tab-content
-專門對應MainPage.tsx/page.tsx的Tab功能，控制Tab按鈕樣式與內容容器。*/
+/* === Tab 區塊 === */
 .tab-buttons {
   display: flex;
   gap: 10px;
@@ -127,33 +127,140 @@ button.bg-red-500 {
 }
 
 .tab-button {
-  padding: 10px 16px;
+  padding: 10px 18px;
   border: 1px solid #ccc;
   border-bottom: none;
-  border-radius: 6px 6px 0 0;
-  background: #f0f0f0;
+  border-radius: 8px 8px 0 0;
+  background: #f1f5f9;
   color: #555;
-  font-weight: normal;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.25s;
 }
 
 .tab-button:hover {
-  background: #e0e0e0;
+  background: #e0e7ff;
 }
 
 .tab-button.active {
-  background: white;
-  border-color: #0070f3;
-  color: #0070f3;
-  font-weight: bold;
+  background: #ffffff;
+  border-color: #2563eb;
+  color: #2563eb;
+  font-weight: 700;
 }
 
-/* Tab Content */
 .tab-content {
   border: 1px solid #ccc;
-  border-radius: 0 6px 6px 6px;
-  padding: 20px;
+  border-radius: 0 8px 8px 8px;
+  padding: 24px;
   background: white;
 }
-/* 以上是Tab 按鈕 */
+
+/* === 發行端 / 驗證端模式切換按鈕 === */
+.mode-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 80px; /* 按鈕之間距 */
+  margin-bottom: 60px;
+}
+
+.mode-buttons button {
+  width: 22vw; /* 佔畫面約 1/4 寬 */
+  min-width: 220px;
+  max-width: 340px;
+  padding: 20px 0;
+  border-radius: 12px;
+  font-size: 28px;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.mode-buttons button.active {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+}
+
+/* === 驗證端背景與內層容器 === */
+.verifier-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.scene-row {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.scene-card {
+  background: #f9fafb;
+  width: 240px;
+  height: 240px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  padding: 40px 20px;
+  transition: 0.3s ease;
+  cursor: pointer;
+}
+
+.scene-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.scene-icon {
+  font-size: 80px;
+  margin-bottom: 12px;
+}
+
+.scene-text {
+  font-size: 22px;
+  font-weight: 700;
+  color: #374151;
+}
+
+/* QR 顯示區塊 */
+.qr-display {
+  margin-top: 50px;
+  text-align: center;
+  background: #f9fafb;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.qr-display img {
+  width: 200px;
+  height: 200px;
+  border: 3px solid #2563eb;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.qr-display button {
+  background: #10b981;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 14px 36px;
+  border-radius: 12px;
+}
+
+.qr-display button:hover {
+  background: #059669;
+}
+
+.verify-result {
+  margin-top: 20px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #2563eb;
+}

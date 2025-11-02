@@ -1,0 +1,180 @@
+/* verifier.css */
+
+/*外層容器：統一發行端樣式 (900px 寬度居中)*/
+.verifier-container {
+    /* 統一外觀樣式 (與 globals.css 的 .container 一致) */
+    max-width: 900px;
+    margin: 0 auto; 
+    background: white; 
+    padding: 24px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+    /* 確保內容仍為垂直堆疊 */
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    min-height: 70vh;
+    padding-top: 40px; 
+    position: relative;
+}
+
+/* 場景橫列：預設為橫向排列，且允許縮放 */
+.scene-row {
+    display: flex;
+    justify-content: center; /* 在大螢幕上居中卡片 */
+    align-items: center;
+    gap: 60px;
+    flex-wrap: nowrap; /* 🚨 關鍵：強制不換行，但在手機端會被 media query 覆蓋 */
+    width: 100%;
+}
+
+/* 各場景卡片：響應式寬度配置 
+*/
+.scene-card {
+    background: #fff;
+    border-radius: 24px;
+    padding: 50px 30px;
+    height: 280px; 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    /* 確保在大/平板螢幕上可以縮放 */
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 280px; /* 理想寬度 */
+    min-width: 120px; /* 最小縮小限制 */
+}
+
+/* ---------------------------------------------------- */
+/* 手機螢幕優化 (寬度小於 600px) - 讓卡片變回垂直堆疊 */
+/* ---------------------------------------------------- */
+@media (max-width: 600px) {
+    .scene-row {
+        flex-direction: column; /* 垂直堆疊，卡片在手機上會更好點擊 */
+        gap: 20px; /* 調整垂直間距 */
+        padding: 0 10px; /* 左右邊距 */
+    }
+
+    .scene-card {
+        width: 100%; /* 卡片佔滿寬度 */
+        max-width: 300px; /* 限制單個卡片的最大寬度 */
+        height: auto; /* 高度自適應 */
+        flex-basis: auto; /* 釋放 flex-basis 限制 */
+        padding: 30px 20px; /* 調整內邊距 */
+    }
+
+    .qr-display {
+        margin-top: 40px; /* 調整 QR 碼上方間距 */
+        padding: 20px;
+    }
+}
+
+
+/* ... 其餘樣式保持不變 ... */
+
+.scene-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+.scene-icon {
+    font-size: 90px;
+    margin-bottom: 20px;
+}
+
+.scene-text {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+}
+
+.qr-display {
+    margin-top: 60px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px 40px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.qr-display img {
+    width: 200px;
+    height: 200px;
+    border: 3px solid #0070f3;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.qr-display button {
+    background: #10b981;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 14px 36px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.qr-display button:hover {
+    background: #059669;
+}
+
+.verify-result {
+    margin-top: 16px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #0070f3;
+}
+
+.qr-modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.qr-box {
+  background: #fff9c4;
+  border: 1px solid #f1c40f;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  position: relative;
+  animation: popIn 0.3s ease;
+}
+
+.qr-box img {
+  width: 200px;
+  height: 200px;
+}
+
+.qr-box p {
+  margin-top: 10px;
+  color: #333;
+  font-weight: bold;
+}
+
+.close-btn {
+  position: absolute;
+  top: 5px; right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #555;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

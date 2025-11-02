@@ -185,7 +185,7 @@ export default function ImmunizationForm({
                 <label>
                   接種日期（精確）
                   <input
-                    type="datetime-local"
+                    type="date"
                     name="接種日期"
                     value={item.接種日期}
                     onChange={(e) => handleChange(index, e)}

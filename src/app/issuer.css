@@ -1,0 +1,29 @@
+/* issuer.css - 僅保留 QR 預覽樣式 */
+
+.qr-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 32px;
+  padding: 24px;
+  background: #f8faff;
+  border-radius: 16px;
+  border: 1px dashed #93c5fd;
+}
+
+.qr-preview img {
+  width: 220px;
+  height: 220px;
+  padding: 12px;
+  background: white;
+  border-radius: 16px;
+  border: 3px solid #3b82f6;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
+}
+
+.qr-preview p {
+  margin-top: 16px;
+  font-weight: 600;
+  color: #1e40af;
+  font-size: 1.1rem;
+}
