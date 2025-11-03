@@ -131,6 +131,7 @@
     color: #0070f3;
 }
 
+/* === QR 彈窗通用樣式 === */
 .qr-modal {
   position: fixed;
   top: 0; left: 0;
@@ -139,34 +140,55 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 2000;
 }
 
 .qr-box {
   background: #fff9c4;
-  border: 1px solid #f1c40f;
-  border-radius: 12px;
-  padding: 20px;
+  border: 2px solid #f1c40f;
+  border-radius: 20px;
+  padding: 30px;
   text-align: center;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
   position: relative;
+  width: 360px;
   animation: popIn 0.3s ease;
 }
 
 .qr-box img {
   width: 200px;
   height: 200px;
+  margin: 16px 0;
+  border: 3px solid #f1c40f;
+  border-radius: 12px;
+  background: white;
 }
 
 .qr-box p {
-  margin-top: 10px;
   color: #333;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.qr-box button {
+  background: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
   font-weight: bold;
+  margin-top: 6px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.qr-box button:hover {
+  background: #15803d;
 }
 
 .close-btn {
   position: absolute;
-  top: 5px; right: 10px;
+  top: 6px; right: 10px;
   background: transparent;
   border: none;
   font-size: 24px;
@@ -175,6 +197,6 @@
 }
 
 @keyframes popIn {
-  from { transform: scale(0.8); opacity: 0; }
+  from { transform: scale(0.85); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }

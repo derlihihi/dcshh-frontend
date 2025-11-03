@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PatientForm from "../../src/app/patient/PatientForm";
 import AllergyForm from "../../src/app/allergy/AllergyForm";
 import ConditionForm from "../../src/app/condition/ConditionForm";
@@ -46,6 +46,23 @@ export default function MainPage() {
   const [conditionData, setConditionData] = useState<any>(null);
   const [vitalSignsData, setVitalSignsData] = useState<any>(null);
   const [immunizationData, setImmunizationData] = useState<any>(null);
+  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
+
+  // 倒數計時狀態
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+
+  // 控制彈窗開關
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  // 倒數邏輯
+  useEffect(() => {
+    if (!showModal || timeLeft <= 0) return;
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [showModal, timeLeft]);
+
 
   const handlePatientSubmit = (data: any) => {
     console.log("父層收到病患資料:", data);
@@ -68,7 +85,6 @@ export default function MainPage() {
     setImmunizationData(data);
   };
 
-  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
 
   // 發行端：送出資料並生成 QRCode
   const handleExport = async () => {
@@ -97,9 +113,10 @@ export default function MainPage() {
       const result = await res.json();
       console.log("後端回傳結果：", result);
 
-      // 假設後端回傳 { converterResponse: { qrCode: "data:image/png;base64,..." } }
-      if (result.converterResponse && result.converterResponse.qrCode) {
+      if (result.converterResponse?.qrCode) {
         setQrCodeUrl(result.converterResponse.qrCode);
+        setShowModal(true);
+        setTimeLeft(300); // 5分鐘倒數
       } else {
         alert("成功送出，但未收到 QR Code");
       }
@@ -107,6 +124,13 @@ export default function MainPage() {
       console.error("傳送失敗：", err);
       alert("送出失敗，請檢查後端是否啟動！");
     }
+  };
+  const formatTime = (sec: number) => {
+    const m = Math.floor(sec / 60)
+      .toString()
+      .padStart(2, "0");
+    const s = (sec % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
   };
 
   // Tab 設定
@@ -167,6 +191,21 @@ export default function MainPage() {
               完成輸入，發行卡片
             </button>
           </div>
+
+          {/* QR 彈窗 */}
+          {showModal && qrCodeUrl && (
+            <div className="qr-modal">
+              <div className="qr-box">
+                  <button className="close-btn" onClick={() => setShowModal(false)}>✕</button>
+                    <p>請使用「數位憑證皮夾APP」掃描 QR Code</p>
+                    <p>請注意 QR Code 僅可使用一次，如失效請重新產生。</p>
+                    <img src={qrCodeUrl} alt="QRCode" />
+                    <p>驗證倒數：{formatTime(timeLeft)}</p>
+                    <button onClick={handleExport}>重新產生 QR Code</button>
+                    <button style={{ marginTop: "8px", background: "#3b82f6" }}>使用手機開啟</button>
+              </div>
+            </div>
+          )}
         </>
     </main>
   );
