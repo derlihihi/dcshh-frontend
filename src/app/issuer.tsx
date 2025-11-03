@@ -142,7 +142,7 @@ export default function MainPage() {
     { key: "immunization", label: "疫苗接種" },
   ];
 
-  return (
+ return (
     <main className="container mx-auto p-6">
       <h1 className="text-2xl font-bold text-center mb-6">
         FHIR Resource 系統
@@ -207,6 +207,25 @@ export default function MainPage() {
             </div>
           )}
         </>
+        
+        {/* 🚀 新增：QR Code 顯示區塊 */}
+        {qrCodeUrl && (
+            <div className="mt-8 p-6 bg-gray-100 rounded-xl shadow-lg text-center">
+                <h2 className="text-xl font-semibold mb-4 text-gray-800">
+                    ✅ 發行成功！請掃描 QR Code
+                </h2>
+                {/* 關鍵：使用 img 標籤顯示 Base64 格式的圖片 */}
+                <img 
+                    src={qrCodeUrl} 
+                    alt="發行卡片的 QR Code" 
+                    className="mx-auto w-64 h-64 border-4 border-white shadow-md rounded-lg"
+                />
+                <p className="mt-4 text-sm text-gray-600">
+                    請使用數位錢包 App 掃描此碼，以領取卡片。
+                </p>
+            </div>
+        )}
     </main>
   );
+
 }
