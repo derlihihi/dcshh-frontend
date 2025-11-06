@@ -7,9 +7,9 @@ import "./issuer.css";
 
 // 💡 定義情境與參考編號的對應表
 const SCENE_REF_MAP = {
-  hospital: "00000000_t001", // 醫療院所
-  school: "00000000_t002", // 學校
-  travel: "00000000_t003", // 旅遊
+  hospital: "00000000_t002", // 醫療院所
+  school: "00000000_t003", // 學校
+  travel: "00000000_t004", // 旅遊
 };
 
 export default function VerifierPage() {
@@ -23,6 +23,8 @@ export default function VerifierPage() {
 
   const [showModal, setShowModal] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
 
   // 倒數計時器
   useEffect(() => {
@@ -62,6 +64,26 @@ export default function VerifierPage() {
       alert("無法取得 QRCode");
     }
   };
+  const filterClaimsByScene = (scene: keyof typeof SCENE_REF_MAP, claims: any[]) => {
+    if (!Array.isArray(claims)) return [];
+
+    if (scene === "hospital") return claims; // 全部揭露
+
+    if (scene === "school") {
+      return claims.filter((c) =>
+        ["name", "vaccine", "vaccination_doses"].includes(c.ename)
+      );
+    }
+
+    if (scene === "travel") {
+      return claims.filter((c) =>
+        ["name", "vaccine", "vaccination_date", "vaccination_doses"].includes(c.ename)
+      );
+    }
+
+    return claims;
+  };
+
 
   // 🎯 驗證結果
   const handleVerify = async () => {
@@ -80,7 +102,12 @@ export default function VerifierPage() {
       });
 
       const data = await res.json();
-      setVerifyResult(data);
+      const claims = data?.data?.[0]?.claims || [];
+
+      setVerifyResult({
+        ...data,
+        filteredClaims: filterClaimsByScene(currentScene!, claims),
+      });
     } catch (err) {
       console.error("驗證檢查錯誤:", err);
       setVerifyResult({ error: "系統錯誤" });
@@ -128,6 +155,7 @@ export default function VerifierPage() {
       </table>
     );
   };
+  
 
   return (
     <div className="space-y-8">
@@ -165,7 +193,12 @@ export default function VerifierPage() {
             >
               重新產生 QR Code
             </button>
-
+            <button
+              onClick={handleVerify}
+              style={{ marginTop: "8px", background: "#1d4ed8", color: "white" }}
+            >
+              ✅ 開始驗證
+            </button>
             {/* 🔹 新增：authUri 連結 */}
             {authUri && (
               <a
@@ -191,18 +224,42 @@ export default function VerifierPage() {
 
       {/* 驗證結果區 */}
       {verifyResult && (
-        <div className="mt-6 p-6 bg-blue-50 rounded-xl border border-blue-200">
-          <h3 className="font-bold text-blue-800 mb-2">驗證結果</h3>
+        <div className="verify-result-panel">
+          <h3 className="font-bold text-blue-800 mb-3">驗證成功 ✅</h3>
 
-          {/* 若有疫苗資料，先顯示表格 */}
+          {/* 🔍 重新查看 QR Code */}
+          <button className="verify-show-btn" onClick={() => setShowModal(true)}>
+            🔄 重新查看 QR Code
+          </button>
+
+          {/* 📄 查看疫苗 / 基礎資料 → Bottom Sheet */}
+          <button className="open-sheet-btn" onClick={() => setSheetOpen(true)}>
+            📑 查看授權揭露資料
+          </button>
+
+          {/* 如果有疫苗資料 → 表格顯示 */}
           {renderVaccineTable()}
 
-          {/* 保留原始 JSON 顯示 */}
-          <pre className="whitespace-pre-wrap text-left bg-white p-4 rounded border overflow-x-auto mt-4">
+          {/* JSON 保留給技術審查 */}
+          <pre className="result-json">
             {JSON.stringify(verifyResult, null, 2)}
           </pre>
         </div>
       )}
+
+      {/* Bottom Sheet */}
+      <div className={`bottom-sheet ${sheetOpen ? "open" : ""}`}>
+        <div className="sheet-header" onClick={() => setSheetOpen(false)}></div>
+        <div className="sheet-content">
+          {verifyResult?.filteredClaims?.map((c: any, i: number) => (
+            <div key={i} className="sheet-item">
+              <span className="sheet-label">{c.cname || c.ename}</span>
+              <span className="sheet-value">{c.value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
     </div>
   );
 }

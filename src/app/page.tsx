@@ -12,7 +12,7 @@ export default function MainPage() {
   return (
     <main className="flex flex-col items-center justify-start py-16 min-h-screen">
       {/* 標題 */}
-      <h1>童行證 FHIR / VC 系統</h1>
+      <h1>童行證 FHIR IPS & 數位憑證皮夾 系統</h1>
 
       {/* 模式切換按鈕 */}
       <div className="mode-buttons">

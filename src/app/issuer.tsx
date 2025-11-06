@@ -136,10 +136,10 @@ export default function MainPage() {
   // Tab 設定
   const tabs = [
     { key: "patient", label: "病患資料" },
+    { key: "immunization", label: "疫苗接種" },
     { key: "allergy", label: "過敏資訊" },
     { key: "condition", label: "病況資訊" },
     { key: "vitalSigns", label: "生命徵象" },
-    { key: "immunization", label: "疫苗接種" },
   ];
 
  return (

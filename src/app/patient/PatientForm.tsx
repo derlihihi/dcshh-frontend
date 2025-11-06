@@ -104,8 +104,10 @@ export default function PatientForm({
             <option value="">請選擇</option>
             <option value="男">男</option>
             <option value="女">女</option>
+            {/*
             <option value="其他">其他</option>
             <option value="不明">不明</option>
+            */}
           </select>
         </label>
         <label>
