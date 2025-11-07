@@ -5,7 +5,7 @@ import { FaHospital, FaSchool, FaPlane } from "react-icons/fa";
 import "./verifier.css";
 import "./issuer.css";
 
-// 💡 定義情境與參考編號的對應表
+// 定義情境與參考編號的對應表
 const SCENE_REF_MAP = {
   hospital: "00000000_t002", // 醫療院所
   school: "00000000_t003", // 學校
@@ -34,8 +34,9 @@ export default function VerifierPage() {
     }, 1000);
     return () => clearInterval(timer);
   }, [showModal, timeLeft]);
+  
 
-  // 🎯 產生 QRCode
+  // 產生 QRCode
   const handleScene = async (scene: keyof typeof SCENE_REF_MAP) => {
     setVerifyResult(null);
     setCurrentScene(scene);
@@ -85,7 +86,7 @@ export default function VerifierPage() {
   };
 
 
-  // 🎯 驗證結果
+  // 驗證結果
   const handleVerify = async () => {
     if (!transactionId) return alert("請先取得 QRCode");
     if (!sceneRef) return alert("情境參考編號遺失，請重新選擇情境");
@@ -108,6 +109,9 @@ export default function VerifierPage() {
         ...data,
         filteredClaims: filterClaimsByScene(currentScene!, claims),
       });
+
+      //按下開始驗證後自動關閉 QR 彈窗
+      setShowModal(false);
     } catch (err) {
       console.error("驗證檢查錯誤:", err);
       setVerifyResult({ error: "系統錯誤" });
@@ -120,41 +124,36 @@ export default function VerifierPage() {
     return `${m}:${s}`;
   };
 
-  // 🧩 顯示疫苗接種資料的表格
+  //  顯示疫苗接種資料的表格
   const renderVaccineTable = () => {
-    if (!verifyResult) return null;
+    if (!verifyResult?.vaccines && !verifyResult?.data?.vaccines) return null;
 
-    const vaccines =
-      verifyResult.vaccines ||
-      verifyResult.immunizations ||
-      verifyResult.data?.vaccines ||
-      verifyResult.data?.immunizations;
-
-    if (!Array.isArray(vaccines) || vaccines.length === 0) return null;
+    const vaccines = verifyResult.vaccines || verifyResult.data.vaccines;
 
     return (
       <table className="w-full mt-4 border-collapse border border-gray-300 bg-white rounded-lg">
         <thead className="bg-blue-100">
           <tr>
             <th className="border border-gray-300 px-4 py-2 text-left">疫苗名稱</th>
+            <th className="border border-gray-300 px-4 py-2 text-left">劑次</th>
             <th className="border border-gray-300 px-4 py-2 text-left">接種日期</th>
           </tr>
         </thead>
         <tbody>
-          {vaccines.map((v: any, idx: number) => (
-            <tr key={idx}>
-              <td className="border border-gray-300 px-4 py-2">
-                {v.name || v.vaccineName || "—"}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {v.date || v.vaccinationDate || "—"}
-              </td>
-            </tr>
-          ))}
+          {vaccines.flatMap((v: any) =>
+            v.doses.map((d: any, idx: number) => (
+              <tr key={`${v.name}-${idx}`}>
+                <td className="border border-gray-300 px-4 py-2">{v.name}</td>
+                <td className="border border-gray-300 px-4 py-2">第 {idx + 1} 劑</td>
+                <td className="border border-gray-300 px-4 py-2">{d.date}</td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     );
   };
+
   
 
   return (
@@ -176,8 +175,8 @@ export default function VerifierPage() {
 
       {/* 彈出 QRCode */}
       {showModal && qrCodeUrl && (
-        <div className="qr-modal">
-          <div className="qr-box">
+        <div className="qr-modal" onClick={() => setShowModal(false)}>
+          <div className="qr-box" onClick={(e) => e.stopPropagation()}>
             <button className="close-btn" onClick={() => setShowModal(false)}>
               ✕
             </button>
@@ -186,20 +185,14 @@ export default function VerifierPage() {
             <img src={qrCodeUrl} alt="QRCode" />
             <p>驗證倒數：{formatTime(timeLeft)}</p>
 
-            {/* 🔁 重新產生 QR Code */}
+            {/* 重新產生 QR Code */}
             <button
               onClick={() => currentScene && handleScene(currentScene)}
               style={{ marginTop: "8px", background: "#059669", color: "white" }}
             >
               重新產生 QR Code
-            </button>
-            <button
-              onClick={handleVerify}
-              style={{ marginTop: "8px", background: "#1d4ed8", color: "white" }}
-            >
-              ✅ 開始驗證
-            </button>
-            {/* 🔹 新增：authUri 連結 */}
+             </button>
+            {/* 新增：authUri 連結 */}
             {authUri && (
               <a
                 href={authUri}
@@ -218,6 +211,12 @@ export default function VerifierPage() {
                 </button>
               </a>
             )}
+            <button
+              onClick={handleVerify}
+              style={{ marginTop: "8px", background: "#1d4ed8", color: "white" }}
+            >
+              開始驗證
+            </button>
           </div>
         </div>
       )}
@@ -225,25 +224,25 @@ export default function VerifierPage() {
       {/* 驗證結果區 */}
       {verifyResult && (
         <div className="verify-result-panel">
-          <h3 className="font-bold text-blue-800 mb-3">驗證成功 ✅</h3>
+          <h3 className="font-bold text-blue-800 mb-3">驗證成功</h3>
 
-          {/* 🔍 重新查看 QR Code */}
+          {/* 重新查看 QR Code */}
           <button className="verify-show-btn" onClick={() => setShowModal(true)}>
-            🔄 重新查看 QR Code
+            重新查看 QR Code
           </button>
 
-          {/* 📄 查看疫苗 / 基礎資料 → Bottom Sheet */}
+          {/* 查看疫苗 / 基礎資料 → Bottom Sheet */}
           <button className="open-sheet-btn" onClick={() => setSheetOpen(true)}>
-            📑 查看授權揭露資料
+            查看授權揭露資料
           </button>
 
           {/* 如果有疫苗資料 → 表格顯示 */}
           {renderVaccineTable()}
 
-          {/* JSON 保留給技術審查 */}
+          {/* JSON 保留給技術審查 
           <pre className="result-json">
             {JSON.stringify(verifyResult, null, 2)}
-          </pre>
+          </pre>*/}
         </div>
       )}
 

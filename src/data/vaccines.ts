@@ -21,7 +21,7 @@ export const vaccines = [
     code: "871888001",
     system: "http://snomed.info/sct",
     display: "Vaccine product containing only Bordetella pertussis and Clostridium tetani and Corynebacterium diphtheriae and Haemophilus influenzae type b and Human poliovirus antigens (medicinal product)",
-    text: "五合一疫苗（白喉、破傷風、百日咳、b型嗜血桿菌、小兒麻痺）"
+    text: "五合一疫苗"
   },
   {
     code: "836402002",
@@ -51,7 +51,7 @@ export const vaccines = [
     code: "871724008",
     system: "http://snomed.info/sct",
     display: "Japanese encephalitis virus antigen only vaccine product",
-    text: "日本腦炎疫苗（活性減毒）"
+    text: "日本腦炎疫苗"
   },
   {
     code: "836375003",
@@ -69,7 +69,7 @@ export const vaccines = [
     code: "836379009",
     system: "http://snomed.info/sct",
     display: "Vaccine product containing only Human papillomavirus 6, 11, 16, 18, 31, 33, 45, 52 and 58 antigens (medicinal product)",
-    text: "人類乳突病毒疫苗（HPV）"
+    text: "人類乳突病毒疫苗"
   },
   {
     code: "836387005",
@@ -81,6 +81,6 @@ export const vaccines = [
     code: "871876003",
     system: "http://snomed.info/sct",
     display: "Diphtheria and acellular pertussis and tetanus vaccine",
-    text: "減量白喉破傷風非細胞性百日咳混合疫苗（Tdap）"
+    text: "減量白喉破傷風非細胞性百日咳混合疫苗"
   }
 ];
