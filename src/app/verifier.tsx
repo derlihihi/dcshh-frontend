@@ -124,11 +124,42 @@ export default function VerifierPage() {
     return `${m}:${s}`;
   };
 
-  //  顯示疫苗接種資料的表格
+    // 顯示疫苗接種資料的表格（從 claims 動態解析）
   const renderVaccineTable = () => {
-    if (!verifyResult?.vaccines && !verifyResult?.data?.vaccines) return null;
+    if (!verifyResult?.data?.[0]?.claims) return null;
 
-    const vaccines = verifyResult.vaccines || verifyResult.data.vaccines;
+    const claims = verifyResult.data[0].claims;
+
+    // 提取疫苗相關 claim
+    const vaccineClaim = claims.find((c: any) => c.ename === "vaccine");
+    const dosesClaim = claims.find((c: any) => c.ename === "vaccination_doses");
+    const dateClaim = claims.find((c: any) => c.ename === "vaccination_date");
+
+    if (!vaccineClaim || !dosesClaim) return null;
+
+    const vaccineName = vaccineClaim.value;
+    const totalDoses = parseInt(dosesClaim.value, 10) || 0;
+
+    // 處理接種日期（支援字串、陣列、或無）
+    let doseDates: string[] = [];
+    if (dateClaim?.value) {
+      if (Array.isArray(dateClaim.value)) {
+        doseDates = dateClaim.value;
+      } else if (typeof dateClaim.value === "string") {
+        doseDates = dateClaim.value
+          .split(",")
+          .map((d: string) => d.trim())
+          .filter(Boolean);
+      }
+    }
+
+    // 補足不足的劑次日期（用「-」表示）
+    while (doseDates.length < totalDoses) {
+      doseDates.push("-");
+    }
+
+    // 僅顯示有劑次的資料
+    if (totalDoses === 0) return null;
 
     return (
       <table className="w-full mt-4 border-collapse border border-gray-300 bg-white rounded-lg">
@@ -140,15 +171,15 @@ export default function VerifierPage() {
           </tr>
         </thead>
         <tbody>
-          {vaccines.flatMap((v: any) =>
-            v.doses.map((d: any, idx: number) => (
-              <tr key={`${v.name}-${idx}`}>
-                <td className="border border-gray-300 px-4 py-2">{v.name}</td>
-                <td className="border border-gray-300 px-4 py-2">第 {idx + 1} 劑</td>
-                <td className="border border-gray-300 px-4 py-2">{d.date}</td>
-              </tr>
-            ))
-          )}
+          {Array.from({ length: totalDoses }, (_, i) => (
+            <tr key={i}>
+              <td className="border border-gray-300 px-4 py-2">{vaccineName}</td>
+              <td className="border border-gray-300 px-4 py-2">第 {i + 1} 劑</td>
+              <td className="border border-gray-300 px-4 py-2">
+                {doseDates[i] && doseDates[i] !== "-" ? doseDates[i] : "-"}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     );

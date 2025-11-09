@@ -208,14 +208,12 @@ export default function MainPage() {
           )}
         </>
         
-        {/* 🚀 新增：QR Code 顯示區塊 */}
+        {/* 新增：QR Code 顯示區塊 
         {qrCodeUrl && (
             <div className="mt-8 p-6 bg-gray-100 rounded-xl shadow-lg text-center">
                 <h2 className="text-xl font-semibold mb-4 text-gray-800">
                     ✅ 發行成功！請掃描 QR Code
-                </h2>
-                {/* 關鍵：使用 img 標籤顯示 Base64 格式的圖片 */}
-                <img 
+                </h2>                <img 
                     src={qrCodeUrl} 
                     alt="發行卡片的 QR Code" 
                     className="mx-auto w-64 h-64 border-4 border-white shadow-md rounded-lg"
@@ -225,6 +223,7 @@ export default function MainPage() {
                 </p>
             </div>
         )}
+        */}
     </main>
   );
 
