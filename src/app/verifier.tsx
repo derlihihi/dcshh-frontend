@@ -34,7 +34,7 @@ export default function VerifierPage() {
     }, 1000);
     return () => clearInterval(timer);
   }, [showModal, timeLeft]);
-  
+
 
   // 產生 QRCode
   const handleScene = async (scene: keyof typeof SCENE_REF_MAP) => {
@@ -126,68 +126,68 @@ export default function VerifierPage() {
 
   // 顯示疫苗接種資料的表格（多筆、欄位順序：vaccine → vaccination_doses → vaccination_date）
   // 顯示疫苗接種資料的表格（主畫面：大而清楚）
-//   const renderVaccineTable = () => {
-//   const claims = verifyResult?.filteredClaims || [];
+  //   const renderVaccineTable = () => {
+  //   const claims = verifyResult?.filteredClaims || [];
 
-//   const vaccineClaim = claims.find((c: any) => c.ename === "vaccine");
-//   const dosesClaim   = claims.find((c: any) => c.ename === "vaccination_doses");
-//   const dateClaim    = claims.find((c: any) => c.ename === "vaccination_date");
+  //   const vaccineClaim = claims.find((c: any) => c.ename === "vaccine");
+  //   const dosesClaim   = claims.find((c: any) => c.ename === "vaccination_doses");
+  //   const dateClaim    = claims.find((c: any) => c.ename === "vaccination_date");
 
-//   if (!vaccineClaim || !dosesClaim || !dateClaim) return null;
+  //   if (!vaccineClaim || !dosesClaim || !dateClaim) return null;
 
-//   const vaccines = (vaccineClaim.value || "").split("_");
-//   const doses    = (dosesClaim.value   || "").split("_");
-//   const dates    = (dateClaim.value    || "").split("_");
+  //   const vaccines = (vaccineClaim.value || "").split("_");
+  //   const doses    = (dosesClaim.value   || "").split("_");
+  //   const dates    = (dateClaim.value    || "").split("_");
 
-//   const maxRecords = Math.max(vaccines.length, doses.length, dates.length);
-//   if (maxRecords === 0) return null;
+  //   const maxRecords = Math.max(vaccines.length, doses.length, dates.length);
+  //   if (maxRecords === 0) return null;
 
-//   return (
-//     <div className="mt-6 overflow-x-auto">
-//       <table className="min-w-full border-collapse border border-gray-300 bg-white rounded-lg shadow-sm">
-//         <thead className="bg-gradient-to-r from-blue-50 to-blue-100">
-//           <tr>
-//             <th className="border border-gray-300 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-//               疫苗名稱
-//             </th>
-//             <th className="border border-gray-300 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-//               劑次
-//             </th>
-//             <th className="border border-gray-300 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-//               接種日期
-//             </th>
-//           </tr>
-//         </thead>
-//         <tbody className="bg-white divide-y divide-gray-200">
-//           {Array.from({ length: maxRecords }, (_, i) => {
-//             const vaccine = vaccines[i]?.trim() || "—";
-//             const dose = doses[i]?.trim() || "—";
-//             const rawDate = dates[i]?.trim();
-//             const formattedDate = rawDate && rawDate.length === 8
-//               ? rawDate.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")
-//               : "—";
+  //   return (
+  //     <div className="mt-6 overflow-x-auto">
+  //       <table className="min-w-full border-collapse border border-gray-300 bg-white rounded-lg shadow-sm">
+  //         <thead className="bg-gradient-to-r from-blue-50 to-blue-100">
+  //           <tr>
+  //             <th className="border border-gray-300 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+  //               疫苗名稱
+  //             </th>
+  //             <th className="border border-gray-300 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+  //               劑次
+  //             </th>
+  //             <th className="border border-gray-300 px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+  //               接種日期
+  //             </th>
+  //           </tr>
+  //         </thead>
+  //         <tbody className="bg-white divide-y divide-gray-200">
+  //           {Array.from({ length: maxRecords }, (_, i) => {
+  //             const vaccine = vaccines[i]?.trim() || "—";
+  //             const dose = doses[i]?.trim() || "—";
+  //             const rawDate = dates[i]?.trim();
+  //             const formattedDate = rawDate && rawDate.length === 8
+  //               ? rawDate.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")
+  //               : "—";
 
-//             return (
-//               <tr key={i} className="hover:bg-gray-50 transition-colors">
-//                 <td className="border border-gray-300 px-6 py-3 text-sm text-gray-900">
-//                   {vaccine}
-//                 </td>
-//                 <td className="border border-gray-300 px-6 py-3 text-sm text-gray-700 font-medium">
-//                   第 {dose} 劑
-//                 </td>
-//                 <td className="border border-gray-300 px-6 py-3 text-sm text-gray-700">
-//                   {formattedDate}
-//                 </td>
-//               </tr>
-//             );
-//           })}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// };
+  //             return (
+  //               <tr key={i} className="hover:bg-gray-50 transition-colors">
+  //                 <td className="border border-gray-300 px-6 py-3 text-sm text-gray-900">
+  //                   {vaccine}
+  //                 </td>
+  //                 <td className="border border-gray-300 px-6 py-3 text-sm text-gray-700 font-medium">
+  //                   第 {dose} 劑
+  //                 </td>
+  //                 <td className="border border-gray-300 px-6 py-3 text-sm text-gray-700">
+  //                   {formattedDate}
+  //                 </td>
+  //               </tr>
+  //             );
+  //           })}
+  //         </tbody>
+  //       </table>
+  //     </div>
+  //   );
+  // };
 
-  
+
 
   return (
     <div className="space-y-8">
@@ -224,7 +224,7 @@ export default function VerifierPage() {
               style={{ marginTop: "8px", background: "#059669", color: "white" }}
             >
               重新產生 QR Code
-             </button>
+            </button>
             {/* 新增：authUri 連結 */}
             {authUri && (
               <a
@@ -279,7 +279,7 @@ export default function VerifierPage() {
         </div>
       )}
 
-            {/* Bottom Sheet */}
+      {/* Bottom Sheet */}
       <div className={`bottom-sheet ${sheetOpen ? "open" : ""}`}>
         <div className="sheet-header" onClick={() => setSheetOpen(false)}></div>
         <div className="sheet-content">
@@ -293,49 +293,49 @@ export default function VerifierPage() {
                 <span className="sheet-value">{c.value}</span>
               </div>
             ))}
-            {/* 顯示性別 */}
-            {verifyResult?.filteredClaims
-              ?.filter((c: any) => c.ename === "gender")
-              .map((c: any, i: number) => (
-                <div key={`gender-${i}`} className="sheet-item">
-                  <span className="sheet-label">性別</span>
-                  <span className="sheet-value">
-                    {c.value === "1" ? "男" : c.value === "2" ? "女" : "未公開"}
-                  </span>
+          {/* 顯示性別 */}
+          {verifyResult?.filteredClaims
+            ?.filter((c: any) => c.ename === "gender")
+            .map((c: any, i: number) => (
+              <div key={`gender-${i}`} className="sheet-item">
+                <span className="sheet-label">性別</span>
+                <span className="sheet-value">
+                  {c.value === "1" ? "男" : c.value === "2" ? "女" : "未公開"}
+                </span>
+              </div>
+            ))}
+
+          {/* 顯示生日 */}
+          {verifyResult?.filteredClaims
+            ?.filter((c: any) => c.ename === "ad_birthday")
+            .map((c: any, i: number) => {
+              const raw = c.value ?? "";
+              const formatted = raw.length === 8
+                ? raw.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")
+                : raw;
+
+              return (
+                <div key={`birth-${i}`} className="sheet-item">
+                  <span className="sheet-label">出生日期</span>
+                  <span className="sheet-value">{formatted}</span>
                 </div>
-              ))}
-
-              {/* 顯示生日 */}
-              {verifyResult?.filteredClaims
-                ?.filter((c: any) => c.ename === "ad_birthday")
-                .map((c: any, i: number) => {
-                  const raw = c.value ?? "";
-                  const formatted = raw.length === 8
-                    ? raw.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")
-                    : raw;
-
-                  return (
-                    <div key={`birth-${i}`} className="sheet-item">
-                      <span className="sheet-label">出生日期</span>
-                      <span className="sheet-value">{formatted}</span>
-                    </div>
-                  );
-                })}
+              );
+            })}
 
           {/* 2. 疫苗紀錄：允許缺少某些欄位 → 能顯示多少顯示多少 */}
           {(() => {
             const claims = verifyResult?.filteredClaims || [];
 
             const vaccineClaim = claims.find((c: any) => c.ename === "vaccine");
-            const dosesClaim   = claims.find((c: any) => c.ename === "vaccination_doses");
-            const dateClaim    = claims.find((c: any) => c.ename === "vaccination_date");
+            const dosesClaim = claims.find((c: any) => c.ename === "vaccination_doses");
+            const dateClaim = claims.find((c: any) => c.ename === "vaccination_date");
 
             // ✅ 改這裡：不再強制三欄都要有
             if (!vaccineClaim && !dosesClaim && !dateClaim) return null;
 
             const vaccines = (vaccineClaim?.value || "").split("_");
-            const doses    = (dosesClaim?.value   || "").split("_");
-            const dates    = (dateClaim?.value    || "").split("_");
+            const doses = (dosesClaim?.value || "").split("_");
+            const dates = (dateClaim?.value || "").split("_");
 
             const max = Math.max(vaccines.length, doses.length, dates.length);
             if (max === 0) return null;
@@ -378,34 +378,33 @@ export default function VerifierPage() {
             );
           })()}
           {/* 顯示生日 */}
-              {verifyResult?.filteredClaims
-                ?.filter((c: any) => c.ename === "ad_birthday")
-                .map((c: any, i: number) => {
-                  const raw = c.value ?? "";
-                  const formatted = raw.length === 8
-                    ? raw.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")
-                    : raw;
+          {verifyResult?.filteredClaims
+            ?.filter((c: any) => c.ename === "ad_birthday")
+            .map((c: any, i: number) => {
+              const raw = c.value ?? "";
+              const formatted = raw.length === 8
+                ? raw.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")
+                : raw;
 
-                  return (
-                    <div key={`birth-${i}`} className="sheet-item">
-                      <span className="sheet-label">出生日期</span>
-                      <span className="sheet-value">{formatted}</span>
-                    </div>
-                  );
-                })}
-            {/* 顯示固定 JSON 連結 */}
-            <div className="sheet-item">
-              <span className="sheet-label">資料連結</span>
-              <a
-                href={`http://localhost:3002//data/viewer.json?id=A123456789`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="sheet-value"
-                style={{ color: "#2563eb", textDecoration: "underline" }}
-              >
-                點我查看 JSON
-              </a>
-            </div>
+              return (
+                <div key={`birth-${i}`} className="sheet-item">
+                  <span className="sheet-label">出生日期</span>
+                  <span className="sheet-value">{formatted}</span>
+                </div>
+              );
+            })}
+          {/* 顯示固定 JSON 連結 */}
+          <div className="sheet-item">
+            <span className="sheet-label">資料連結</span>
+{currentScene === "hospital" && verifyResult && (
+  <div className="sheet-item">
+    <span className="sheet-label"></span>
+    <a href={`/viewer?id=A123456789`} className="sheet-value link-btn">
+      查看 Viewer 頁面
+    </a>
+  </div>
+)}
+          </div>
 
         </div>
       </div>

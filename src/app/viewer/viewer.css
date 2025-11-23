@@ -1,0 +1,65 @@
+/* Patient Viewer Page Styles */
+
+body {
+  font-family: "Segoe UI", "Noto Sans TC", Arial, sans-serif;
+  padding: 40px;
+  background: linear-gradient(180deg, #f0f6ff 0%, #e8f0ff 100%);
+  color: #333;
+}
+
+.viewer-container {
+  max-width: 900px;
+  margin: auto;
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.section {
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.section h2 {
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 16px;
+}
+
+.sheet-row {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.sheet-label {
+  font-weight: 600;
+  width: 160px;
+  color: #444;
+}
+
+.sheet-value {
+  color: #1e40af;
+  font-weight: 500;
+}
+
+.list-item {
+  margin-top: 8px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.list-item h3 {
+  margin-bottom: 10px;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.link-btn {
+  color: #2563eb;
+  text-decoration: underline;
+  cursor: pointer;
+}
