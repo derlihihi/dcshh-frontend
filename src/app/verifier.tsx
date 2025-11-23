@@ -377,6 +377,35 @@ export default function VerifierPage() {
               </div>
             );
           })()}
+          {/* 顯示生日 */}
+              {verifyResult?.filteredClaims
+                ?.filter((c: any) => c.ename === "ad_birthday")
+                .map((c: any, i: number) => {
+                  const raw = c.value ?? "";
+                  const formatted = raw.length === 8
+                    ? raw.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")
+                    : raw;
+
+                  return (
+                    <div key={`birth-${i}`} className="sheet-item">
+                      <span className="sheet-label">出生日期</span>
+                      <span className="sheet-value">{formatted}</span>
+                    </div>
+                  );
+                })}
+            {/* 顯示固定 JSON 連結 */}
+            <div className="sheet-item">
+              <span className="sheet-label">資料連結</span>
+              <a
+                href={`http://localhost:3002//data/viewer.json?id=A123456789`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="sheet-value"
+                style={{ color: "#2563eb", textDecoration: "underline" }}
+              >
+                點我查看 JSON
+              </a>
+            </div>
 
         </div>
       </div>

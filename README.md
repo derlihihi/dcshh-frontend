@@ -6,7 +6,7 @@ git clone <repository-url>
 ```
 ### 2. 移動到該資料夾
 ```bash
-cd HIZ/hiz-form
+cd dcshh-frontend
 ```
 ### 3. 安裝相依套件
 ```bash
