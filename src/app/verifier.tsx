@@ -396,16 +396,15 @@ export default function VerifierPage() {
           {/* 顯示固定 JSON 連結 */}
           <div className="sheet-item">
             <span className="sheet-label">資料連結</span>
-{currentScene === "hospital" && verifyResult && (
-  <div className="sheet-item">
-    <span className="sheet-label"></span>
-    <a href={`/viewer?id=A123456789`} className="sheet-value link-btn">
-      查看 Viewer 頁面
-    </a>
-  </div>
-)}
+            {currentScene === "hospital" && verifyResult && (
+              <div className="sheet-item">
+                <span className="sheet-label"></span>
+                <a href={`/viewer?id=A123456789`} className="sheet-value link-btn">
+                  查看 Viewer 頁面
+                </a>
+              </div>
+            )}
           </div>
-
         </div>
       </div>
     </div>

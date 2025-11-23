@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import "./viewer.css";
 
 export default function ViewerPage() {
   const [data, setData] = useState<any>(null);
@@ -12,7 +13,7 @@ export default function ViewerPage() {
 
   // 讀取 viewer.json
   useEffect(() => {
-    fetch(`http://localhost:3001/data/viewer.json?id=${id}`)
+    fetch(`http://localhost:3002/data/viewer.json?id=${id}`)
       .then((res) => res.json())
       .then((json) => setData(json))
       .catch((err) => console.error(err));
@@ -41,7 +42,7 @@ export default function ViewerPage() {
 
   const renderAllergy = () => (
     <div className="tab-content">
-      <h2>過敏史</h2>
+      <h2>過敏資訊</h2>
       {allergy.map((a: any, i: number) => (
         <div key={i} className="card">
           <p><strong>名稱：</strong>{a.code.text}</p>
@@ -55,7 +56,7 @@ export default function ViewerPage() {
 
   const renderCondition = () => (
     <div className="tab-content">
-      <h2>病情</h2>
+      <h2>病況資訊</h2>
       {condition.map((c: any, i: number) => (
         <div key={i} className="card">
           <p><strong>疾病名稱：</strong>{c.code.text}</p>
@@ -68,7 +69,7 @@ export default function ViewerPage() {
 
   const renderVital = () => (
     <div className="tab-content">
-      <h2>生命跡象</h2>
+      <h2>生命徵象</h2>
       {vitalSigns.map((v: any, i: number) => (
         <div key={i} className="card">
           <p>
@@ -104,10 +105,11 @@ export default function ViewerPage() {
 
       <div className="tab-buttons">
         <button className={activeTab === "patient" ? "active" : ""} onClick={() => setActiveTab("patient")}>基本資料</button>
-        <button className={activeTab === "allergy" ? "active" : ""} onClick={() => setActiveTab("allergy")}>過敏史</button>
-        <button className={activeTab === "condition" ? "active" : ""} onClick={() => setActiveTab("condition")}>病情</button>
-        <button className={activeTab === "vital" ? "active" : ""} onClick={() => setActiveTab("vital")}>生命跡象</button>
-        <button className={activeTab === "immunization" ? "active" : ""} onClick={() => setActiveTab("immunization")}>疫苗</button>
+        <button className={activeTab === "immunization" ? "active" : ""} onClick={() => setActiveTab("immunization")}>疫苗接種</button>
+        <button className={activeTab === "allergy" ? "active" : ""} onClick={() => setActiveTab("allergy")}>過敏資訊</button>
+        <button className={activeTab === "condition" ? "active" : ""} onClick={() => setActiveTab("condition")}>病況資訊</button>
+        <button className={activeTab === "vital" ? "active" : ""} onClick={() => setActiveTab("vital")}>生命徵象</button>
+        
       </div>
 
       {activeTab === "patient" && renderPatient()}
